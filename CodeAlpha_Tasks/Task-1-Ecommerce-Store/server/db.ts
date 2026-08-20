@@ -1,0 +1,802 @@
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
+import { Product, User, Order, Category, Review, StoreStats } from '../src/types';
+
+const DATA_DIR = path.join(process.cwd(), 'data');
+const DB_FILE = path.join(DATA_DIR, 'store.json');
+
+interface DatabaseSchema {
+  products: Product[];
+  categories: Category[];
+  users: (User & { passwordHash: string })[];
+  orders: Order[];
+}
+
+const INITIAL_CATEGORIES: Category[] = [
+  {
+    id: 'cat-all',
+    name: 'All Products',
+    slug: 'all',
+    iconName: 'LayoutGrid',
+    description: 'Explore our complete catalog of curated essentials',
+    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'cat-electronics',
+    name: 'Electronics & Audio',
+    slug: 'electronics',
+    iconName: 'Headphones',
+    description: 'High-fidelity audio, smart devices, and modern tech',
+    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'cat-wearables',
+    name: 'Wearables & Watches',
+    slug: 'wearables',
+    iconName: 'Watch',
+    description: 'Precision timepieces and connected fitness gear',
+    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'cat-fashion',
+    name: 'Fashion & Apparel',
+    slug: 'fashion',
+    iconName: 'Shirt',
+    description: 'Premium minimalism, crafted fabrics, and timeless fits',
+    image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'cat-home',
+    name: 'Home & Workspace',
+    slug: 'home',
+    iconName: 'Home',
+    description: 'Ergonomic furnishings, ambient lighting, and decor',
+    image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'cat-accessories',
+    name: 'Accessories & EDC',
+    slug: 'accessories',
+    iconName: 'Briefcase',
+    description: 'Leather goods, everyday carry, and travel companions',
+    image: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=600&auto=format&fit=crop&q=80',
+  },
+];
+
+const INITIAL_PRODUCTS: Product[] = [
+  {
+    id: 'prod-1',
+    name: 'AcousticPro Wireless ANC Headphones',
+    description: 'Engineered for audiophiles with custom 40mm titanium drivers, hybrid active noise cancellation, 45-hour battery life, and plush memory foam earcups for all-day listening sessions.',
+    price: 249.99,
+    originalPrice: 299.99,
+    rating: 4.8,
+    numReviews: 124,
+    category: 'electronics',
+    brand: 'AuraSound',
+    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80',
+    additionalImages: [
+      'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=800&auto=format&fit=crop&q=80',
+    ],
+    inStock: true,
+    countInStock: 18,
+    featured: true,
+    badge: 'Best Seller',
+    specs: {
+      'Driver Size': '40mm Titanium',
+      'Battery Life': '45 hours (ANC on)',
+      'Connectivity': 'Bluetooth 5.3 / 3.5mm Aux',
+      'Weight': '250g',
+      'Charging': 'USB-C Fast Charge (10m = 5h)',
+    },
+    reviews: [
+      {
+        id: 'rev-1',
+        userId: 'usr-2',
+        userName: 'Alex Morgan',
+        rating: 5,
+        comment: 'The noise cancellation is astonishing on flights and the battery truly lasts all week!',
+        createdAt: '2026-07-14T10:30:00.000Z',
+      },
+      {
+        id: 'rev-2',
+        userId: 'usr-3',
+        userName: 'Sarah Chen',
+        rating: 5,
+        comment: 'Crisp highs, warm mids, and deep non-muddy bass. Worth every penny.',
+        createdAt: '2026-07-28T14:15:00.000Z',
+      },
+    ],
+  },
+  {
+    id: 'prod-2',
+    name: 'Chronos Horizon Automatic Titanium Watch',
+    description: 'Precision Swiss automatic movement housed in a featherweight Grade 5 titanium case. Features sapphire crystal glass, 100m water resistance, and a breathable Italian leather strap.',
+    price: 489.00,
+    originalPrice: 550.00,
+    rating: 4.9,
+    numReviews: 89,
+    category: 'wearables',
+    brand: 'Chronos',
+    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80',
+    additionalImages: [
+      'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800&auto=format&fit=crop&q=80',
+    ],
+    inStock: true,
+    countInStock: 9,
+    featured: true,
+    badge: 'Limited Edition',
+    specs: {
+      'Movement': 'Self-Winding Swiss Automatic',
+      'Case Material': 'Grade 5 Titanium',
+      'Glass': 'Anti-Reflective Sapphire Crystal',
+      'Water Resistance': '10 ATM (100m)',
+      'Diameter': '41mm',
+    },
+    reviews: [
+      {
+        id: 'rev-3',
+        userId: 'usr-4',
+        userName: 'David Miller',
+        rating: 5,
+        comment: 'Flawless build quality. The titanium feels weightless on the wrist.',
+        createdAt: '2026-08-02T19:00:00.000Z',
+      },
+    ],
+  },
+  {
+    id: 'prod-3',
+    name: 'Nordic Organic Heavyweight Hoodie',
+    description: 'Crafted from 100% GOTS-certified organic cotton with a substantial 460 GSM french terry weave. Double-layered hood, reinforced ribbed cuffs, and a modern relaxed silhouette.',
+    price: 95.00,
+    originalPrice: 120.00,
+    rating: 4.7,
+    numReviews: 64,
+    category: 'fashion',
+    brand: 'NordicThread',
+    image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&auto=format&fit=crop&q=80',
+    additionalImages: [
+      'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80',
+    ],
+    inStock: true,
+    countInStock: 32,
+    featured: false,
+    badge: 'Sustainable',
+    specs: {
+      'Material': '100% GOTS Organic Cotton',
+      'Fabric Weight': '460 GSM French Terry',
+      'Fit': 'Relaxed Modern Cut',
+      'Origin': 'Ethically made in Portugal',
+    },
+    reviews: [],
+  },
+  {
+    id: 'prod-4',
+    name: 'Lumina Minimalist Desk Bar Lamp',
+    description: 'Precision machined aluminum architecture with dual-zone warm-to-cool LED lighting, intuitive touch dimming, glare-free optical asymmetric light guide, and wireless charging base.',
+    price: 135.00,
+    originalPrice: 160.00,
+    rating: 4.6,
+    numReviews: 42,
+    category: 'home',
+    brand: 'StudioLumina',
+    image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&auto=format&fit=crop&q=80',
+    additionalImages: [
+      'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&auto=format&fit=crop&q=80',
+    ],
+    inStock: true,
+    countInStock: 14,
+    featured: true,
+    specs: {
+      'Luminance': '900 Lumens Max (CRI > 95)',
+      'Color Temperature': '2700K - 6500K Stepless',
+      'Base Function': '15W Qi Wireless Fast Charger',
+      'Body': 'Anodized Space Gray Aluminum',
+    },
+    reviews: [],
+  },
+  {
+    id: 'prod-5',
+    name: 'Artisan Vegetable-Tanned Leather Briefcase',
+    description: 'Handcrafted from full-grain Tuscan vegetable-tanned leather that develops a rich patina over time. Padded compartment fits up to 16-inch laptops with solid brass YKK hardware.',
+    price: 320.00,
+    originalPrice: 380.00,
+    rating: 4.9,
+    numReviews: 53,
+    category: 'accessories',
+    brand: 'Heritage Craft',
+    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
+    additionalImages: [
+      'https://images.unsplash.com/photo-1627123424574-724758594e93?w=800&auto=format&fit=crop&q=80',
+    ],
+    inStock: true,
+    countInStock: 7,
+    featured: false,
+    badge: 'Handmade',
+    specs: {
+      'Leather': 'Full-Grain Tuscan Cowhide',
+      'Laptop Sleeve': 'Fits up to 16" MacBook Pro',
+      'Hardware': 'Solid Antiqued Brass',
+      'Dimensions': '40cm x 30cm x 9cm',
+    },
+    reviews: [],
+  },
+  {
+    id: 'prod-6',
+    name: 'PulseFlow Smart Fitness & Sleep Tracker',
+    description: 'Next-generation biometric tracking with 24/7 continuous heart rate variability (HRV), pulse oximetry, recovery index score, and a 14-day ultra battery life with 5 ATM water resistance.',
+    price: 159.99,
+    originalPrice: 189.99,
+    rating: 4.7,
+    numReviews: 110,
+    category: 'wearables',
+    brand: 'PulseBio',
+    image: 'https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=800&auto=format&fit=crop&q=80',
+    inStock: true,
+    countInStock: 25,
+    featured: true,
+    badge: 'Hot',
+    specs: {
+      'Sensors': 'Optical PPG, SpO2, Skin Temp, 6-Axis IMU',
+      'Display': '1.47" AMOLED Touchscreen',
+      'Battery': 'Up to 14 Days on a single charge',
+      'Waterproof': '50 Meters (5 ATM)',
+    },
+    reviews: [],
+  },
+  {
+    id: 'prod-7',
+    name: 'Apex Mechanical Studio Keyboard',
+    description: 'Custom mechanical keyboard engineered with hot-swappable tactile switches, gasket mounted acoustic dampening layers, south-facing RGB, and a solid CNC aluminum chassis.',
+    price: 185.00,
+    originalPrice: 210.00,
+    rating: 4.8,
+    numReviews: 76,
+    category: 'electronics',
+    brand: 'ApexTech',
+    image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&auto=format&fit=crop&q=80',
+    inStock: true,
+    countInStock: 12,
+    featured: false,
+    specs: {
+      'Layout': '75% Compact (84 Keys)',
+      'Switches': 'Factory-Lubed Tactile Gateron Pro',
+      'Plate & Mount': 'FR4 Gasket Mount with Poron foam',
+      'Connectivity': 'Bluetooth 5.1 / 2.4GHz / Type-C',
+    },
+    reviews: [],
+  },
+  {
+    id: 'prod-8',
+    name: 'PurePour Double-Wall Ceramic French Press',
+    description: 'Double-walled insulated matte ceramic coffee press with a micro-mesh filtration system that eliminates grit while extracting rich aromatic oils for the ideal morning brew.',
+    price: 68.00,
+    originalPrice: 85.00,
+    rating: 4.9,
+    numReviews: 95,
+    category: 'home',
+    brand: 'NordicBrew',
+    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=800&auto=format&fit=crop&q=80',
+    inStock: true,
+    countInStock: 21,
+    featured: false,
+    specs: {
+      'Capacity': '850ml (approx. 4 cups)',
+      'Body': 'Heavy stoneware matte ceramic',
+      'Filter': 'Dual stainless steel micro-sieve',
+      'Thermal': 'Keeps coffee hot for up to 3 hours',
+    },
+    reviews: [],
+  },
+  {
+    id: 'prod-9',
+    name: 'Aerolite Weatherproof Commuter Backpack',
+    description: 'Crafted from waterproof Cordura ballistic nylon with magnetic Fidlock buckles, expandable 24L capacity, luggage pass-through strap, and ergonomic air-mesh back ventilation.',
+    price: 145.00,
+    originalPrice: 175.00,
+    rating: 4.8,
+    numReviews: 68,
+    category: 'accessories',
+    brand: 'AeroTravel',
+    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
+    inStock: true,
+    countInStock: 15,
+    featured: false,
+    specs: {
+      'Volume': '24L Expandable',
+      'Material': '1000D Cordura Waterproof Nylon',
+      'Zippers': 'YKK AquaGuard Weatherproof',
+      'Laptop Storage': 'Suspended 16" padded pocket',
+    },
+    reviews: [],
+  },
+  {
+    id: 'prod-10',
+    name: 'Merino Wool Minimalist Crew Knit',
+    description: 'Spun from superfine 19.5-micron Australian Merino wool. Naturally thermo-regulating, anti-odor, ultra-soft against bare skin, and machine washable on gentle cycle.',
+    price: 110.00,
+    originalPrice: 135.00,
+    rating: 4.7,
+    numReviews: 41,
+    category: 'fashion',
+    brand: 'NordicThread',
+    image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&auto=format&fit=crop&q=80',
+    inStock: true,
+    countInStock: 19,
+    featured: false,
+    specs: {
+      'Yarn': '100% Extra Fine Australian Merino',
+      'Gauge': '12-Gauge Single Jersey Knit',
+      'Care': 'Machine washable cold / Dry flat',
+    },
+    reviews: [],
+  },
+  {
+    id: 'prod-11',
+    name: 'Nova Pro 4K HDR Desktop Webcam & Mic',
+    description: 'Studio-quality 4K Sony Starvis sensor with auto-framing AI, dual noise-canceling beamforming microphones, and magnetic physical privacy shutter for executive calls.',
+    price: 169.00,
+    originalPrice: 199.00,
+    rating: 4.6,
+    numReviews: 38,
+    category: 'electronics',
+    brand: 'ApexTech',
+    image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80',
+    inStock: true,
+    countInStock: 16,
+    featured: false,
+    specs: {
+      'Resolution': '4K UHD @ 30FPS / 1080p @ 60FPS',
+      'Field of View': '90Â° / 78Â° / 65Â° Adjustable',
+      'Sensor': 'Sony 1/2.8" CMOS Starvis',
+      'Connection': 'USB 3.0 Type-C Plug & Play',
+    },
+    reviews: [],
+  },
+  {
+    id: 'prod-12',
+    name: 'AromaPulse Ultrasonic Diffuser & Lamp',
+    description: 'Sculpted from solid porcelain ceramic and natural beech wood. Features ambient ambient breathing light mode, whisper-quiet ultrasonic misting, and auto shut-off safety.',
+    price: 79.00,
+    originalPrice: 95.00,
+    rating: 4.9,
+    numReviews: 82,
+    category: 'home',
+    brand: 'StudioLumina',
+    image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&auto=format&fit=crop&q=80',
+    inStock: true,
+    countInStock: 28,
+    featured: false,
+    specs: {
+      'Capacity': '300ml Water Tank (up to 10 hours)',
+      'Coverage': 'Up to 450 sq ft',
+      'Materials': 'Matte Ceramic & Solid Beech Wood',
+      'Lighting': 'Warm 2400K Ambient Glow',
+    },
+    reviews: [],
+  }
+];
+
+function hashPassword(password: string): string {
+  return crypto.createHash('sha256').update(password + 'apex_ecommerce_salt_2026').digest('hex');
+}
+
+const INITIAL_USERS = [
+  {
+    id: 'usr-1',
+    name: 'Store Administrator',
+    email: 'admin@store.com',
+    role: 'admin' as const,
+    passwordHash: hashPassword('admin123'),
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'usr-2',
+    name: 'Alex Morgan',
+    email: 'alex@example.com',
+    role: 'customer' as const,
+    passwordHash: hashPassword('password123'),
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    createdAt: '2026-03-15T12:00:00.000Z',
+  },
+];
+
+const INITIAL_ORDERS: Order[] = [
+  {
+    id: 'ORD-72941',
+    userId: 'usr-2',
+    userName: 'Alex Morgan',
+    userEmail: 'alex@example.com',
+    items: [
+      {
+        product: INITIAL_PRODUCTS[0],
+        quantity: 1,
+      },
+      {
+        product: INITIAL_PRODUCTS[7],
+        quantity: 1,
+      },
+    ],
+    shippingAddress: {
+      fullName: 'Alex Morgan',
+      email: 'alex@example.com',
+      phone: '+1 (555) 234-5678',
+      street: '742 Evergreen Terrace',
+      city: 'Seattle',
+      state: 'WA',
+      postalCode: '98101',
+      country: 'United States',
+    },
+    shippingMethod: {
+      id: 'ship-std',
+      name: 'Standard Insured Shipping',
+      price: 0,
+      estimatedDays: '3-5 Business Days',
+    },
+    paymentMethod: 'Credit Card (Visa •••• 4242)',
+    itemsPrice: 317.99,
+    discountPrice: 31.80,
+    taxPrice: 22.89,
+    shippingPrice: 0,
+    totalPrice: 309.08,
+    status: 'Delivered',
+    isPaid: true,
+    paidAt: '2026-08-10T14:22:00.000Z',
+    createdAt: '2026-08-10T14:20:00.000Z',
+  },
+  {
+    id: 'ORD-89312',
+    userId: 'usr-2',
+    userName: 'Alex Morgan',
+    userEmail: 'alex@example.com',
+    items: [
+      {
+        product: INITIAL_PRODUCTS[3],
+        quantity: 1,
+      },
+    ],
+    shippingAddress: {
+      fullName: 'Alex Morgan',
+      email: 'alex@example.com',
+      phone: '+1 (555) 234-5678',
+      street: '742 Evergreen Terrace',
+      city: 'Seattle',
+      state: 'WA',
+      postalCode: '98101',
+      country: 'United States',
+    },
+    shippingMethod: {
+      id: 'ship-exp',
+      name: 'Express Air Delivery',
+      price: 15.00,
+      estimatedDays: '1-2 Business Days',
+    },
+    paymentMethod: 'PayPal',
+    itemsPrice: 135.00,
+    discountPrice: 0,
+    taxPrice: 10.80,
+    shippingPrice: 15.00,
+    totalPrice: 160.80,
+    status: 'Shipped',
+    isPaid: true,
+    paidAt: '2026-08-18T09:12:00.000Z',
+    createdAt: '2026-08-18T09:10:00.000Z',
+  },
+];
+
+class Database {
+  private data: DatabaseSchema;
+
+  constructor() {
+    this.ensureDataDir();
+    this.data = this.loadData();
+  }
+
+  private ensureDataDir() {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+  }
+
+  private loadData(): DatabaseSchema {
+    try {
+      if (fs.existsSync(DB_FILE)) {
+        const raw = fs.readFileSync(DB_FILE, 'utf-8');
+        return JSON.parse(raw);
+      }
+    } catch (e) {
+      console.error('Error reading database file, initializing defaults', e);
+    }
+
+    const defaultData: DatabaseSchema = {
+      products: INITIAL_PRODUCTS,
+      categories: INITIAL_CATEGORIES,
+      users: INITIAL_USERS,
+      orders: INITIAL_ORDERS,
+    };
+    this.saveData(defaultData);
+    return defaultData;
+  }
+
+  private saveData(dataToSave?: DatabaseSchema) {
+    try {
+      this.ensureDataDir();
+      const content = JSON.stringify(dataToSave || this.data, null, 2);
+      fs.writeFileSync(DB_FILE, content, 'utf-8');
+    } catch (e) {
+      console.error('Failed to write database file', e);
+    }
+  }
+
+  // --- Products ---
+  public getProducts(params?: {
+    search?: string;
+    category?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    sort?: string;
+    featured?: boolean;
+    inStockOnly?: boolean;
+  }): Product[] {
+    let result = [...this.data.products];
+
+    if (params?.search) {
+      const q = params.search.toLowerCase().trim();
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.brand.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q)
+      );
+    }
+
+    if (params?.category && params.category !== 'all') {
+      result = result.filter((p) => p.category.toLowerCase() === params.category!.toLowerCase());
+    }
+
+    if (params?.minPrice !== undefined && !isNaN(params.minPrice)) {
+      result = result.filter((p) => p.price >= params.minPrice!);
+    }
+
+    if (params?.maxPrice !== undefined && !isNaN(params.maxPrice)) {
+      result = result.filter((p) => p.price <= params.maxPrice!);
+    }
+
+    if (params?.featured) {
+      result = result.filter((p) => p.featured);
+    }
+
+    if (params?.inStockOnly) {
+      result = result.filter((p) => p.inStock && p.countInStock > 0);
+    }
+
+    // Sorting
+    if (params?.sort) {
+      switch (params.sort) {
+        case 'price-asc':
+          result.sort((a, b) => a.price - b.price);
+          break;
+        case 'price-desc':
+          result.sort((a, b) => b.price - a.price);
+          break;
+        case 'rating':
+          result.sort((a, b) => b.rating - a.rating);
+          break;
+        case 'newest':
+          result.sort((a, b) => (b.id > a.id ? 1 : -1));
+          break;
+        case 'reviews':
+          result.sort((a, b) => b.numReviews - a.numReviews);
+          break;
+        default:
+          // featured or default order
+          result.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+      }
+    }
+
+    return result;
+  }
+
+  public getProductById(id: string): Product | null {
+    return this.data.products.find((p) => p.id === id) || null;
+  }
+
+  public addProduct(productData: Omit<Product, 'id'>): Product {
+    const newProduct: Product = {
+      ...productData,
+      id: `prod-${Date.now()}`,
+      reviews: [],
+      numReviews: 0,
+      rating: productData.rating || 5.0,
+    };
+    this.data.products.unshift(newProduct);
+    this.saveData();
+    return newProduct;
+  }
+
+  public updateProduct(id: string, updates: Partial<Product>): Product | null {
+    const idx = this.data.products.findIndex((p) => p.id === id);
+    if (idx === -1) return null;
+
+    this.data.products[idx] = {
+      ...this.data.products[idx],
+      ...updates,
+    };
+    this.saveData();
+    return this.data.products[idx];
+  }
+
+  public deleteProduct(id: string): boolean {
+    const initialLen = this.data.products.length;
+    this.data.products = this.data.products.filter((p) => p.id !== id);
+    if (this.data.products.length !== initialLen) {
+      this.saveData();
+      return true;
+    }
+    return false;
+  }
+
+  public addProductReview(productId: string, review: Omit<Review, 'id' | 'createdAt'>): Product | null {
+    const product = this.getProductById(productId);
+    if (!product) return null;
+
+    const newRev: Review = {
+      ...review,
+      id: `rev-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+    };
+
+    const reviews = product.reviews || [];
+    reviews.unshift(newRev);
+
+    const avgRating = Number(
+      (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
+    );
+
+    return this.updateProduct(productId, {
+      reviews,
+      rating: avgRating,
+      numReviews: reviews.length,
+    });
+  }
+
+  // --- Categories ---
+  public getCategories(): (Category & { itemCount: number })[] {
+    return this.data.categories.map((c) => {
+      const count =
+        c.slug === 'all'
+          ? this.data.products.length
+          : this.data.products.filter((p) => p.category.toLowerCase() === c.slug.toLowerCase()).length;
+      return {
+        ...c,
+        itemCount: count,
+      };
+    });
+  }
+
+  // --- Users & Authentication ---
+  public registerUser(name: string, email: string, password: string): { user: User; token: string } {
+    const normalizedEmail = email.toLowerCase().trim();
+    const existing = this.data.users.find((u) => u.email.toLowerCase() === normalizedEmail);
+    if (existing) {
+      throw new Error('An account with this email address already exists.');
+    }
+
+    const newUser = {
+      id: `usr-${Date.now()}`,
+      name: name.trim(),
+      email: normalizedEmail,
+      role: 'customer' as const,
+      passwordHash: hashPassword(password),
+      avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}`,
+      createdAt: new Date().toISOString(),
+    };
+
+    this.data.users.push(newUser);
+    this.saveData();
+
+    const token = Buffer.from(`${newUser.id}:${Date.now()}`).toString('base64');
+    const { passwordHash: _, ...safeUser } = newUser;
+    return { user: { ...safeUser, token }, token };
+  }
+
+  public loginUser(email: string, password: string): { user: User; token: string } {
+    const normalizedEmail = email.toLowerCase().trim();
+    const user = this.data.users.find((u) => u.email.toLowerCase() === normalizedEmail);
+
+    if (!user || user.passwordHash !== hashPassword(password)) {
+      throw new Error('Invalid email or password.');
+    }
+
+    const token = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
+    const { passwordHash: _, ...safeUser } = user;
+    return { user: { ...safeUser, token }, token };
+  }
+
+  public getUserById(id: string): User | null {
+    const user = this.data.users.find((u) => u.id === id);
+    if (!user) return null;
+    const { passwordHash: _, ...safeUser } = user;
+    return safeUser;
+  }
+
+  public getUserByToken(token: string): User | null {
+    try {
+      const decoded = Buffer.from(token, 'base64').toString('utf-8');
+      const [userId] = decoded.split(':');
+      if (!userId) return null;
+      return this.getUserById(userId);
+    } catch {
+      return null;
+    }
+  }
+
+  // --- Orders ---
+  public createOrder(orderData: Omit<Order, 'id' | 'createdAt' | 'status' | 'isPaid'>): Order {
+    const newOrder: Order = {
+      ...orderData,
+      id: `ORD-${Math.floor(10000 + Math.random() * 90000)}`,
+      status: 'Processing',
+      isPaid: true,
+      paidAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+    };
+
+    // Deduct stock
+    for (const item of newOrder.items) {
+      const product = this.getProductById(item.product.id);
+      if (product) {
+        const newCount = Math.max(0, product.countInStock - item.quantity);
+        this.updateProduct(product.id, {
+          countInStock: newCount,
+          inStock: newCount > 0,
+        });
+      }
+    }
+
+    this.data.orders.unshift(newOrder);
+    this.saveData();
+    return newOrder;
+  }
+
+  public getOrders(userId?: string): Order[] {
+    if (userId) {
+      return this.data.orders.filter((o) => o.userId === userId);
+    }
+    return this.data.orders;
+  }
+
+  public getOrderById(id: string): Order | null {
+    return this.data.orders.find((o) => o.id === id) || null;
+  }
+
+  public updateOrderStatus(id: string, status: Order['status']): Order | null {
+    const order = this.getOrderById(id);
+    if (!order) return null;
+    order.status = status;
+    this.saveData();
+    return order;
+  }
+
+  public getStats(): StoreStats {
+    const totalRevenue = this.data.orders.reduce((sum, o) => sum + (o.isPaid ? o.totalPrice : 0), 0);
+    const lowStockProducts = this.data.products.filter((p) => p.countInStock <= 10);
+
+    return {
+      totalRevenue: Number(totalRevenue.toFixed(2)),
+      totalOrders: this.data.orders.length,
+      totalProducts: this.data.products.length,
+      totalUsers: this.data.users.length,
+      recentOrders: this.data.orders.slice(0, 5),
+      lowStockProducts,
+    };
+  }
+}
+
+export const db = new Database();

@@ -1,0 +1,6 @@
+{
+  "name": "E-Commerce Store",
+  "description": "Full-stack e-commerce platform with product catalog, search and filter, shopping cart, user registration/login, order processing, and database storage.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Pulse — Social Media Platform",
+  "description": "Full-stack mini social media application with user profiles, posts & comments, like/follow system, activity notifications, and Express.js database.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

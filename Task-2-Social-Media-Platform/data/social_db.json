@@ -1,0 +1,449 @@
+{
+  "users": [
+    {
+      "id": "u-zorwa",
+      "username": "zorwarehman",
+      "name": "Zorwa Rehman",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80",
+      "bio": "Full-Stack Developer & UI Craftsman. Building modern web experiences with React, TypeScript, Express, and Tailwind CSS. 💻✨",
+      "location": "Lahore, Pakistan",
+      "website": "https://github.com/ZorwaRehman",
+      "joinedDate": "Joined August 2024",
+      "isVerified": true,
+      "following": [
+        "u-alex",
+        "u-sarah",
+        "u-marcus"
+      ],
+      "followers": [
+        "u-alex",
+        "u-elena",
+        "u-sarah",
+        "u-david",
+        "u-maya"
+      ],
+      "savedPosts": [
+        "p-2"
+      ],
+      "likedPosts": [
+        "p-1",
+        "p-2",
+        "p-3"
+      ]
+    },
+    {
+      "id": "u-alex",
+      "username": "alexdev",
+      "name": "Alex Rivera",
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&auto=format&fit=crop&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&auto=format&fit=crop&q=80",
+      "bio": "Senior Frontend Architect @ TechPulse. Exploring distributed systems, React Server Components & WebGL shaders.",
+      "location": "San Francisco, CA",
+      "website": "https://alexrivera.codes",
+      "joinedDate": "Joined March 2023",
+      "isVerified": true,
+      "following": [
+        "u-zorwa",
+        "u-sarah"
+      ],
+      "followers": [
+        "u-zorwa",
+        "u-marcus",
+        "u-david"
+      ],
+      "savedPosts": [
+        "p-1"
+      ],
+      "likedPosts": [
+        "p-1",
+        "p-4"
+      ]
+    },
+    {
+      "id": "u-sarah",
+      "username": "sarahdesigns",
+      "name": "Sarah Chen",
+      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&auto=format&fit=crop&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1200&auto=format&fit=crop&q=80",
+      "bio": "Product Designer & Design Systems advocate. Obsessed with micro-interactions, accessibility, and high-fidelity prototypes. 🎨",
+      "location": "London, UK",
+      "website": "https://sarahchen.design",
+      "joinedDate": "Joined January 2024",
+      "isVerified": true,
+      "following": [
+        "u-zorwa",
+        "u-alex",
+        "u-elena"
+      ],
+      "followers": [
+        "u-zorwa",
+        "u-alex",
+        "u-marcus"
+      ],
+      "savedPosts": [
+        "p-3"
+      ],
+      "likedPosts": [
+        "p-1",
+        "p-2"
+      ]
+    },
+    {
+      "id": "u-elena",
+      "username": "elenarostova",
+      "name": "Elena Rostova",
+      "avatar": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80",
+      "bio": "AI Engineer & Researcher. Building autonomous agents, LLM pipelines, and multimodal creative tools. 🤖",
+      "location": "Berlin, Germany",
+      "website": "https://elena-ai.dev",
+      "joinedDate": "Joined May 2024",
+      "isVerified": false,
+      "following": [
+        "u-zorwa",
+        "u-alex"
+      ],
+      "followers": [
+        "u-zorwa",
+        "u-sarah"
+      ],
+      "savedPosts": [],
+      "likedPosts": [
+        "p-2"
+      ]
+    },
+    {
+      "id": "u-marcus",
+      "username": "marcustech",
+      "name": "Marcus Vance",
+      "avatar": "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=400&auto=format&fit=crop&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&auto=format&fit=crop&q=80",
+      "bio": "Full-Stack Node.js hacker. Coffee enthusiast ☕ and open-source contributor.",
+      "location": "Toronto, Canada",
+      "website": "https://marcus.sh",
+      "joinedDate": "Joined July 2024",
+      "isVerified": false,
+      "following": [
+        "u-zorwa"
+      ],
+      "followers": [
+        "u-zorwa"
+      ],
+      "savedPosts": [],
+      "likedPosts": [
+        "p-3"
+      ]
+    }
+  ],
+  "posts": [
+    {
+      "id": "p-1",
+      "userId": "u-zorwa",
+      "user": {
+        "id": "u-zorwa",
+        "name": "Zorwa Rehman",
+        "username": "zorwarehman",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
+        "isVerified": true
+      },
+      "content": "🚀 Super excited to showcase Task 2 of the CodeAlpha Internship: Pulse Social Media Platform! Built with a high-performance Express backend, dynamic post interactions, live follower management, and sleek responsive design. What do you think of this clean UI architecture?",
+      "mediaUrl": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1000&auto=format&fit=crop&q=80",
+      "mediaType": "image",
+      "tags": [
+        "codealpha",
+        "webdev",
+        "fullstack",
+        "react"
+      ],
+      "likes": [
+        "u-alex",
+        "u-sarah",
+        "u-zorwa"
+      ],
+      "reposts": [
+        "u-alex"
+      ],
+      "commentCount": 3,
+      "isPinned": true,
+      "createdAt": "2026-08-20T16:09:48.893Z"
+    },
+    {
+      "id": "p-2",
+      "userId": "u-sarah",
+      "user": {
+        "id": "u-sarah",
+        "name": "Sarah Chen",
+        "username": "sarahdesigns",
+        "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&auto=format&fit=crop&q=80",
+        "isVerified": true
+      },
+      "content": "Quick poll for frontend engineers: When building a modern web application, which CSS paradigm do you prefer the most in 2025/2026?",
+      "tags": [
+        "design",
+        "css",
+        "frontend",
+        "uiux"
+      ],
+      "likes": [
+        "u-zorwa",
+        "u-elena"
+      ],
+      "reposts": [
+        "u-zorwa"
+      ],
+      "commentCount": 2,
+      "poll": {
+        "question": "Preferred Styling Architecture:",
+        "options": [
+          {
+            "id": "opt-1",
+            "text": "Tailwind CSS v4 Utility-First",
+            "votes": [
+              "u-zorwa",
+              "u-alex",
+              "u-marcus"
+            ]
+          },
+          {
+            "id": "opt-2",
+            "text": "CSS Modules / Vanilla CSS",
+            "votes": [
+              "u-elena"
+            ]
+          },
+          {
+            "id": "opt-3",
+            "text": "Styled Components / Emotion",
+            "votes": []
+          },
+          {
+            "id": "opt-4",
+            "text": "shadcn/ui + Radix UI Primitives",
+            "votes": [
+              "u-sarah"
+            ]
+          }
+        ],
+        "totalVotes": 5
+      },
+      "createdAt": "2026-08-20T13:54:48.894Z"
+    },
+    {
+      "id": "p-3",
+      "userId": "u-alex",
+      "user": {
+        "id": "u-alex",
+        "name": "Alex Rivera",
+        "username": "alexdev",
+        "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&auto=format&fit=crop&q=80",
+        "isVerified": true
+      },
+      "content": "Just deployed our new microservices pipeline with zero downtime. Clean separation of concerns between API ingestion, database persistence, and websocket streaming is unmatched. 💡",
+      "mediaUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1000&auto=format&fit=crop&q=80",
+      "mediaType": "image",
+      "tags": [
+        "backend",
+        "nodejs",
+        "devops",
+        "scalability"
+      ],
+      "likes": [
+        "u-zorwa",
+        "u-marcus"
+      ],
+      "reposts": [],
+      "commentCount": 1,
+      "createdAt": "2026-08-20T10:54:48.894Z"
+    },
+    {
+      "id": "p-4",
+      "userId": "u-elena",
+      "user": {
+        "id": "u-elena",
+        "name": "Elena Rostova",
+        "username": "elenarostova",
+        "avatar": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
+        "isVerified": false
+      },
+      "content": "Experimenting with generative embeddings for real-time recommendation feeds. Combining vector distance and social graph clustering yields surprisingly accurate content discovery!",
+      "tags": [
+        "ai",
+        "machinelearning",
+        "datascience"
+      ],
+      "likes": [
+        "u-alex"
+      ],
+      "reposts": [],
+      "commentCount": 0,
+      "createdAt": "2026-08-20T04:54:48.894Z"
+    }
+  ],
+  "comments": [
+    {
+      "id": "c-1",
+      "postId": "p-1",
+      "userId": "u-alex",
+      "user": {
+        "id": "u-alex",
+        "name": "Alex Rivera",
+        "username": "alexdev",
+        "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&auto=format&fit=crop&q=80",
+        "isVerified": true
+      },
+      "content": "This looks incredibly clean Zorwa! The dark-mode contrast and smooth micro-interactions make it feel like a production-grade social platform.",
+      "createdAt": "2026-08-20T16:19:48.894Z",
+      "likes": [
+        "u-zorwa",
+        "u-sarah"
+      ]
+    },
+    {
+      "id": "c-2",
+      "postId": "p-1",
+      "userId": "u-sarah",
+      "user": {
+        "id": "u-sarah",
+        "name": "Sarah Chen",
+        "username": "sarahdesigns",
+        "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&auto=format&fit=crop&q=80",
+        "isVerified": true
+      },
+      "content": "The typography pairing and spacing rhythm are top notch. Great job on the user profile layout!",
+      "createdAt": "2026-08-20T16:34:48.894Z",
+      "likes": [
+        "u-zorwa"
+      ]
+    },
+    {
+      "id": "c-3",
+      "postId": "p-1",
+      "userId": "u-zorwa",
+      "user": {
+        "id": "u-zorwa",
+        "name": "Zorwa Rehman",
+        "username": "zorwarehman",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
+        "isVerified": true
+      },
+      "content": "Thank you Alex & Sarah! Appreciate the feedback! 🚀",
+      "createdAt": "2026-08-20T16:44:48.894Z",
+      "likes": [
+        "u-alex"
+      ],
+      "parentId": "c-1"
+    },
+    {
+      "id": "c-4",
+      "postId": "p-2",
+      "userId": "u-zorwa",
+      "user": {
+        "id": "u-zorwa",
+        "name": "Zorwa Rehman",
+        "username": "zorwarehman",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
+        "isVerified": true
+      },
+      "content": "Tailwind v4 is blazing fast with zero-config Vite integration. Total game changer!",
+      "createdAt": "2026-08-20T14:34:48.894Z",
+      "likes": [
+        "u-sarah"
+      ]
+    },
+    {
+      "id": "c-5",
+      "postId": "p-3",
+      "userId": "u-marcus",
+      "user": {
+        "id": "u-marcus",
+        "name": "Marcus Vance",
+        "username": "marcustech",
+        "avatar": "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=400&auto=format&fit=crop&q=80",
+        "isVerified": false
+      },
+      "content": "Solid work Alex. Are you guys running on Docker containers or native serverless?",
+      "createdAt": "2026-08-20T13:34:48.894Z",
+      "likes": [
+        "u-alex"
+      ]
+    }
+  ],
+  "notifications": [
+    {
+      "id": "n-1",
+      "recipientId": "u-zorwa",
+      "actor": {
+        "id": "u-alex",
+        "name": "Alex Rivera",
+        "username": "alexdev",
+        "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&auto=format&fit=crop&q=80"
+      },
+      "type": "like",
+      "postId": "p-1",
+      "postSnippet": "🚀 Super excited to showcase Task 2 of the CodeAlpha Internship...",
+      "isRead": false,
+      "createdAt": "2026-08-20T16:24:48.894Z"
+    },
+    {
+      "id": "n-2",
+      "recipientId": "u-zorwa",
+      "actor": {
+        "id": "u-sarah",
+        "name": "Sarah Chen",
+        "username": "sarahdesigns",
+        "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&auto=format&fit=crop&q=80"
+      },
+      "type": "comment",
+      "postId": "p-1",
+      "commentSnippet": "The typography pairing and spacing rhythm are top notch...",
+      "isRead": false,
+      "createdAt": "2026-08-20T16:34:48.894Z"
+    },
+    {
+      "id": "n-3",
+      "recipientId": "u-zorwa",
+      "actor": {
+        "id": "u-elena",
+        "name": "Elena Rostova",
+        "username": "elenarostova",
+        "avatar": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80"
+      },
+      "type": "follow",
+      "isRead": true,
+      "createdAt": "2026-08-20T14:54:48.894Z"
+    }
+  ],
+  "trending": [
+    {
+      "id": "tr-1",
+      "tag": "codealpha",
+      "category": "Technology · Trending",
+      "postCount": 1420
+    },
+    {
+      "id": "tr-2",
+      "tag": "fullstack",
+      "category": "Web Development",
+      "postCount": 3890
+    },
+    {
+      "id": "tr-3",
+      "tag": "react19",
+      "category": "Frontend Ecosystem",
+      "postCount": 8940
+    },
+    {
+      "id": "tr-4",
+      "tag": "typescript",
+      "category": "Software Engineering",
+      "postCount": 12400
+    },
+    {
+      "id": "tr-5",
+      "tag": "ai_agents",
+      "category": "Artificial Intelligence",
+      "postCount": 24500
+    }
+  ]
+}

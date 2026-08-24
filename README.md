@@ -1,6 +1,6 @@
 # 🚀 CodeAlpha Internship Projects
 
-Welcome to my **CodeAlpha Web Development Internship** repository! This repository showcases full-stack web applications developed during the internship, highlighting modern UI/UX design, responsive layouts, client and server-side state management, and interactive user experiences.
+Welcome to my **CodeAlpha Full-Stack Development Internship** repository! This repository showcases full-stack web applications developed during the internship, highlighting modern UI/UX design, responsive layouts, client and server-side state management, and interactive user experiences.
 
 ---
 

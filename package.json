@@ -1,0 +1,20 @@
+{
+  "name": "codealpha-tasks",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "Task-1-Ecommerce-Store",
+    "Task-2-Social-Media-Platform"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=task-1-ecommerce-store",
+    "build": "npm run build --workspace=task-1-ecommerce-store",
+    "start": "npm run start --workspace=task-1-ecommerce-store",
+    "clean": "npm run clean --workspace=task-1-ecommerce-store",
+    "lint": "npm run lint --workspace=task-1-ecommerce-store",
+    "dev:task1": "npm run dev --workspace=task-1-ecommerce-store",
+    "dev:task2": "npm run dev --workspace=task-2-social-media-platform",
+    "build:task1": "npm run build --workspace=task-1-ecommerce-store",
+    "build:task2": "npm run build --workspace=task-2-social-media-platform"
+  }
+}

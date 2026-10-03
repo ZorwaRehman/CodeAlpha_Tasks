@@ -10,7 +10,11 @@ interface SocialDatabaseData {
   trending: TrendingTopic[];
 }
 
-const DB_FILE = path.join(process.cwd(), 'data', 'social_db.json');
+const DB_FILE = fs.existsSync(path.join(process.cwd(), 'data', 'social_db.json'))
+  ? path.join(process.cwd(), 'data', 'social_db.json')
+  : fs.existsSync(path.join(process.cwd(), 'Task-2-Social-Media-Platform', 'data', 'social_db.json'))
+  ? path.join(process.cwd(), 'Task-2-Social-Media-Platform', 'data', 'social_db.json')
+  : path.join(__dirname, '..', 'data', 'social_db.json');
 
 const INITIAL_USERS: User[] = [
   {

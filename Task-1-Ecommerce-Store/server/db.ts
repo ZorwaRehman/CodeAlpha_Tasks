@@ -3,7 +3,11 @@ import path from 'path';
 import crypto from 'crypto';
 import { Product, User, Order, Category, Review, StoreStats } from '../src/types';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
+const DATA_DIR = fs.existsSync(path.join(process.cwd(), 'data'))
+  ? path.join(process.cwd(), 'data')
+  : fs.existsSync(path.join(process.cwd(), 'Task-1-Ecommerce-Store', 'data'))
+  ? path.join(process.cwd(), 'Task-1-Ecommerce-Store', 'data')
+  : path.join(__dirname, '..', 'data');
 const DB_FILE = path.join(DATA_DIR, 'store.json');
 
 interface DatabaseSchema {

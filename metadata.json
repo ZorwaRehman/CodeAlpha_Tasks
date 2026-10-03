@@ -2,5 +2,7 @@
   "name": "Apex Store — Curated Essentials & Tech",
   "description": "Discover precision hardware, luxury accessories, and minimalist apparel with live order tracking.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
